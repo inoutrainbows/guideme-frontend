@@ -59,14 +59,15 @@ class _homeScreenState extends State<homeScreen> {
     });
   }
 
-  Future<void> _takePictureAndSend() async {
+Future<void> _takePictureAndSend() async {
+  try {
     XFile? picture = await _controller.takePicture();
     List<int> imageBytes = await picture.readAsBytes();
     String base64Image = base64Encode(imageBytes);
 
     final response = await http.post(
-      Uri.parse('http://localhost:8000/process-image'),
-      body: jsonEncode({'image': base64Image}),
+      Uri.parse('http://localhost:8080/predict'),
+      body: jsonEncode({'image_data': base64Image}),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -77,8 +78,13 @@ class _homeScreenState extends State<homeScreen> {
       _showResponseMessage(jsonDecode(response.body)['message']);
     } else {
       print('Failed to process the image');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
     }
+  } catch (e) {
+    print('An error occurred: $e');
   }
+}
 
   void _showResponseMessage(String message) {
     showDialog(

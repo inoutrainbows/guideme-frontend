@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+/build/
+.packages/
+.pub/
+.pub-cache/
+.dart_tool/
+*.iml
+*.lock
+*.log
